@@ -93,6 +93,114 @@ for date in past_Dates:
         t5 = pd.merge(t3, t4, on='Country', how='outer')
         t5['Date']=yesterday
         t5.to_csv(r'C:\Users\Zachary Hebard\Downloads\ReporteCategoriaClasePais.csv')
+        
+        #Creating a dictionary linking spanish and english country spellings
+        country_map = {
+            'ESTADOS UNIDOS DE AMERICA': 'USA',
+            'MEXICO': 'Mexico',
+            'ESPAÑA': 'Spain',
+            'ALEMANIA': 'Germany',
+            'JAPON': 'Japan',
+            'COLOMBIA': 'Colombia',
+            'PAISES BAJOS': 'Netherlands',
+            'ITALIA': 'Italy',
+            'CHINA': 'China',
+            'FRANCIA': 'France',
+            'LETONIA': 'Latvia',
+            'AUSTRIA': 'Austria',
+            'COSTA RICA': 'Costa Rica',
+            'GRECIA': 'Greece',
+            'RUSIA': 'Russia',
+            'CANADA': 'Canada',
+            'AUSTRALIA': 'Australia',
+            'REINO UNIDO DE LA GRAN BRETAÑA E IRLANDA DEL NORTE': 'United Kingdom',
+            'BRASIL': 'Brazil',
+            'INDIA': 'India',
+            'SINGAPUR': 'Singapore',
+            'FILIPINAS': 'Philippines',
+            'EMIRATOS ARABES UNIDOS': 'United Arab Emirates',
+            'SUDAFRICA': 'South Africa',
+            'ECUADOR': 'Ecuador',
+            'PANAMA': 'Panama',
+            'PORTUGAL': 'Portugal',
+            'COREA DEL SUR': 'South Korea',
+            'PERU': 'Peru',
+            'PUERTO RICO': 'Puerto Rico',
+            'EL SALVADOR': 'El Salvador',
+            'BERMUDAS': 'Bermuda',
+            'BELGICA': 'Belgium',
+            'LITUANIA': 'Lithuania',
+            'BOLIVIA': 'Bolivia',
+            'CHILE': 'Chile',
+            'ESTONIA': 'Estonia',
+            'VENEZUELA': 'Venezuela',
+            'BULGARIA': 'Bulgaria',
+            'NIGERIA': 'Nigeria',
+            'ARUBA': 'Aruba',
+            'PARAGUAY': 'Paraguay',
+            'TURQUIA': 'Turkey',
+            'URUGUAY': 'Uruguay',
+            'SERBIA': 'Serbia',
+            'INDONESIA': 'Indonesia',
+            'ISRAEL': 'Israel',
+            'KAZAKHSTAN': 'Kazakhstan',
+            'GHANA': 'Ghana',
+            'NUEVA ZELANDIA': 'New Zealand',
+            'BAHAMAS': 'Bahamas',
+            'ANGUILA': 'Anguilla',
+            'IRAK': 'Iraq',
+            'POLONIA': 'Poland',
+            'QATAR': 'Qatar',
+            'ARGENTINA': 'Argentina',
+            'HONG KONG': 'Hong Kong',
+            'SUIZA': 'Switzerland',
+            'NORUEGA': 'Norway',
+            'GUATEMALA': 'Guatemala',
+            'HONDURAS': 'Honduras',
+            'REPUBLICA DOMINICANA': 'Dominican Republic',
+            'TAIWAN': 'Taiwan',
+            'BIELORRUSIA': 'Belarus',
+            'IRLANDA': 'Ireland',
+            'RUMANIA': 'Romania',
+            'CUBA': 'Cuba',
+            'UCRANIA': 'Ukraine',
+            'SURINAME': 'Suriname',
+            'VIETNAM': 'Vietnam',
+            'DINAMARCA': 'Denmark',
+            'LIBANO': 'Lebanon',
+            'ISLAS CAIMAN  ': 'Cayman Islands',
+            'CROACIA': 'Croatia',
+            'SUECIA': 'Sweden',
+            'GEORGIA': 'Georgia',
+            'LUXEMBURGO': 'Luxembourg',
+            'MAURICIO': 'Mauritius',
+            'REPUBLICA CHECA': 'Czech Republic',
+            'TAILANDIA': 'Thailand',
+            'FINLANDIA': 'Finland',
+            'MALASIA': 'Malaysia',
+            'BOSNIA': 'Bosnia and Herzegovina',
+            'CHIPRE': 'Cyprus',
+            'HUNGRIA': 'Hungary',
+            'GIBRALTAR': 'Gibraltar',
+            'TRINIDAD Y TOBAGO': 'Trinidad and Tobago',
+            'KENYA': 'Kenya',
+            'JAMAICA': 'Jamaica',
+            'MALTA': 'Malta',
+            'ESLOVENIA': 'Slovenia',
+            'NICARAGUA': 'Nicaragua',
+            'GUAM EUA': 'Guam',
+            'EGIPTO': 'Egypt',
+            'BANGLADESH': 'Bangladesh',
+            'ISLAS VIRGENES NORTEAMERICANAS': 'U.S. Virgin Islands'
+        }
+
+        #Reset index, add column of Enlhish county spelling using country_map dictionary and reconfigure df.
+        t5 = t5.reset_index()
+        t5['Country'] = t5['Country_Spanish'].apply(lambda x: country_map.get(x, None))
+        t5 = t5.loc[:, ['Country', 'AÑEJO_TEQUILA 100% DE AGAVE', 'BLANCO_TEQUILA 100% DE AGAVE', 'REPOSADO_TEQUILA 100% DE AGAVE', 
+                        'EXTRA AÑEJO_TEQUILA 100% DE AGAVE',	'BLANCO_TEQUILA',	'REPOSADO_TEQUILA',	'JOVEN_TEQUILA',	
+                        'JOVEN_TEQUILA 100% DE AGAVE',	'Total Liters',	'TEQUILA',	'TEQUILA 100% DE AGAVE', 'Date']]  
+        t5 = t5.set_index('Country')
 
         #FOR SQL IMPORT- Create a list of all needed column names even if not reprecented in the dates data. 
         column_names = [
@@ -124,14 +232,10 @@ for date in past_Dates:
         for file in os.listdir():
             if file == 'ReporteCategoriaClasePais.csv':
                 continue
-   
-        
         source= (r"ReporteCategoriaClasePais.csv")
         fileName = yesterday
-        #.strftime('%d-%m-%Y')
         fileName = fileName+".csv"
         dest = os.path.join(os.path.dirname(source), fileName)
-
         os.rename(source, dest)
         
     #Creating and exception to aid in automation to skip dates where no exports were made resulting in a blnak .csv that would error out.
