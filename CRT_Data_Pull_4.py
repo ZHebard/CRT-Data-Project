@@ -78,20 +78,128 @@ csv_input = pd.read_csv(r'C:\Users\Zachary Hebard\Downloads\ReporteCategoriaClas
 csv_input = csv_input.drop(
     labels=[0,1,2],
     axis = 0)
-csv_input = csv_input.rename(columns={'NombrePais': 'Country', 'textbox11': 'Total Liters', 'Categoria': 'Category', 'textbox14': 'Category Liters', 'Clase': 'Class', 'textbox17': 'Class Liters'})
+csv_input = csv_input.rename(columns={'NombrePais': 'Country_Spanish', 'textbox11': 'Total Liters', 'Categoria': 'Category', 'textbox14': 'Category Liters', 'Clase': 'Class', 'textbox17': 'Class Liters'})
 
 #selecting page elements and entering date information or selecting check boxes to get all 
 #wanted data, downloaded data as .csv
-t3 = csv_input.pivot(values='Class Liters', index='Country', columns=['Category', 'Class']).swaplevel(0,1,axis=1)
+t3 = csv_input.pivot(values='Class Liters', index='Country_Spanish', columns=['Category', 'Class']).swaplevel(0,1,axis=1)
 t3.columns = t3.columns.map('_'.join)
-t2=pd.pivot_table(csv_input, values='Category Liters', index='Country', columns='Category', aggfunc='max')
-t1=pd.pivot_table(csv_input, values='Total Liters', index='Country', aggfunc='max')
+t2=pd.pivot_table(csv_input, values='Category Liters', index='Country_Spanish', columns='Category', aggfunc='max')
+t1=pd.pivot_table(csv_input, values='Total Liters', index='Country_Spanish', aggfunc='max')
 
 #Creating DFs T4 and T5 to merge T1-T3 to dinish the conversion from long to wide data and adding a new column
 #called date to represent the data of which the given data represents. Re-write T5 back to same .csv file
-t4 = pd.merge(t1, t2, on='Country', how='outer')
-t5 = pd.merge(t3, t4, on='Country', how='outer')
+t4 = pd.merge(t1, t2, on='Country_Spanish', how='outer')
+t5 = pd.merge(t3, t4, on='Country_Spanish', how='outer')
 t5['Date']=fileName
+
+#Creating a dictionary linking spanish and english country spellings
+country_map = {
+    'ESTADOS UNIDOS DE AMERICA': 'USA',
+    'MEXICO': 'Mexico',
+    'ESPAÑA': 'Spain',
+    'ALEMANIA': 'Germany',
+    'JAPON': 'Japan',
+    'COLOMBIA': 'Colombia',
+    'PAISES BAJOS': 'Netherlands',
+    'ITALIA': 'Italy',
+    'CHINA': 'China',
+    'FRANCIA': 'France',
+    'LETONIA': 'Latvia',
+    'AUSTRIA': 'Austria',
+    'COSTA RICA': 'Costa Rica',
+    'GRECIA': 'Greece',
+    'RUSIA': 'Russia',
+    'CANADA': 'Canada',
+    'AUSTRALIA': 'Australia',
+    'REINO UNIDO DE LA GRAN BRETAÑA E IRLANDA DEL NORTE': 'United Kingdom',
+    'BRASIL': 'Brazil',
+    'INDIA': 'India',
+    'SINGAPUR': 'Singapore',
+    'FILIPINAS': 'Philippines',
+    'EMIRATOS ARABES UNIDOS': 'United Arab Emirates',
+    'SUDAFRICA': 'South Africa',
+    'ECUADOR': 'Ecuador',
+    'PANAMA': 'Panama',
+    'PORTUGAL': 'Portugal',
+    'COREA DEL SUR': 'South Korea',
+    'PERU': 'Peru',
+    'PUERTO RICO': 'Puerto Rico',
+    'EL SALVADOR': 'El Salvador',
+    'BERMUDAS': 'Bermuda',
+    'BELGICA': 'Belgium',
+    'LITUANIA': 'Lithuania',
+    'BOLIVIA': 'Bolivia',
+    'CHILE': 'Chile',
+    'ESTONIA': 'Estonia',
+    'VENEZUELA': 'Venezuela',
+    'BULGARIA': 'Bulgaria',
+    'NIGERIA': 'Nigeria',
+    'ARUBA': 'Aruba',
+    'PARAGUAY': 'Paraguay',
+    'TURQUIA': 'Turkey',
+    'URUGUAY': 'Uruguay',
+    'SERBIA': 'Serbia',
+    'INDONESIA': 'Indonesia',
+    'ISRAEL': 'Israel',
+    'KAZAKHSTAN': 'Kazakhstan',
+    'GHANA': 'Ghana',
+    'NUEVA ZELANDIA': 'New Zealand',
+    'BAHAMAS': 'Bahamas',
+    'ANGUILA': 'Anguilla',
+    'IRAK': 'Iraq',
+    'POLONIA': 'Poland',
+    'QATAR': 'Qatar',
+    'ARGENTINA': 'Argentina',
+    'HONG KONG': 'Hong Kong',
+    'SUIZA': 'Switzerland',
+    'NORUEGA': 'Norway',
+    'GUATEMALA': 'Guatemala',
+    'HONDURAS': 'Honduras',
+    'REPUBLICA DOMINICANA': 'Dominican Republic',
+    'TAIWAN': 'Taiwan',
+    'BIELORRUSIA': 'Belarus',
+    'IRLANDA': 'Ireland',
+    'RUMANIA': 'Romania',
+    'CUBA': 'Cuba',
+    'UCRANIA': 'Ukraine',
+    'SURINAME': 'Suriname',
+    'VIETNAM': 'Vietnam',
+    'DINAMARCA': 'Denmark',
+    'LIBANO': 'Lebanon',
+    'ISLAS CAIMAN  ': 'Cayman Islands',
+    'CROACIA': 'Croatia',
+    'SUECIA': 'Sweden',
+    'GEORGIA': 'Georgia',
+    'LUXEMBURGO': 'Luxembourg',
+    'MAURICIO': 'Mauritius',
+    'REPUBLICA CHECA': 'Czech Republic',
+    'TAILANDIA': 'Thailand',
+    'FINLANDIA': 'Finland',
+    'MALASIA': 'Malaysia',
+    'BOSNIA': 'Bosnia and Herzegovina',
+    'CHIPRE': 'Cyprus',
+    'HUNGRIA': 'Hungary',
+    'GIBRALTAR': 'Gibraltar',
+    'TRINIDAD Y TOBAGO': 'Trinidad and Tobago',
+    'KENYA': 'Kenya',
+    'JAMAICA': 'Jamaica',
+    'MALTA': 'Malta',
+    'ESLOVENIA': 'Slovenia',
+    'NICARAGUA': 'Nicaragua',
+    'GUAM EUA': 'Guam',
+    'EGIPTO': 'Egypt',
+    'BANGLADESH': 'Bangladesh',
+    'ISLAS VIRGENES NORTEAMERICANAS': 'U.S. Virgin Islands'
+}
+
+#Reset index, add column of Enlhish county spelling using country_map dictionary and reconfigure df.
+t5 = t5.reset_index()
+t5['Country'] = t5['Country_Spanish'].apply(lambda x: country_map.get(x, None))
+t5 = t5.loc[:, ['Country', 'AÑEJO_TEQUILA 100% DE AGAVE', 'BLANCO_TEQUILA 100% DE AGAVE', 'REPOSADO_TEQUILA 100% DE AGAVE', 
+                'EXTRA AÑEJO_TEQUILA 100% DE AGAVE',	'BLANCO_TEQUILA',	'REPOSADO_TEQUILA',	'JOVEN_TEQUILA',	
+                'JOVEN_TEQUILA 100% DE AGAVE',	'Total Liters',	'TEQUILA',	'TEQUILA 100% DE AGAVE', 'Date']]  
+t5 = t5.set_index('Country')
 
 #FOR SQL IMPORT- Create a list of all needed column names even if not reprecented in the dates data. 
 column_names = [
@@ -157,7 +265,7 @@ t5['EXTRA AÑEJO_TEQUILA'] = t5['EXTRA AÑEJO_TEQUILA'].str.replace(',', '')
 t5['AÑEJO_TEQUILA 100% DE AGAVE'] = t5['AÑEJO_TEQUILA 100% DE AGAVE'].str.replace(',', '')
 
 #establishing connection with SQL server
-connection_string = f"postgresql://user:pass@localhost:port/CRT_Data"
+connection_string = f"postgresql://postgres:el_pandillo@localhost:5433/CRT_Data"
 engine = create_engine(connection_string)
 
 #Identify table for import and import fianl T5 df.
