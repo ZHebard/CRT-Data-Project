@@ -265,7 +265,7 @@ t5['EXTRA AÑEJO_TEQUILA'] = t5['EXTRA AÑEJO_TEQUILA'].str.replace(',', '')
 t5['AÑEJO_TEQUILA 100% DE AGAVE'] = t5['AÑEJO_TEQUILA 100% DE AGAVE'].str.replace(',', '')
 
 #establishing connection with SQL server
-connection_string = f"postgresql://postgres:el_pandillo@localhost:5433/CRT_Data"
+connection_string = f"postgresql://User:Password@localhost:PORT/CRT_Data"
 engine = create_engine(connection_string)
 
 #Identify table for import and import fianl T5 df.
