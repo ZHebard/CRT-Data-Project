@@ -24,7 +24,7 @@ raw_Yesterday = raw_Today - timedelta(days = 1)
 yesterday = raw_Yesterday.strftime('%d/%m/%Y')
 fileName = raw_Yesterday.strftime('%Y-%m-%d')
 
-#Setting up chrome driver with selenium to automate chrome      
+#Setting up chrome driver with selenium to automate chrome  
 service = Service(executable_path=r"C:\Users\Zachary Hebard\chromedriver")
 driver = webdriver.Chrome(service=service)
 
@@ -81,6 +81,7 @@ csv_input = csv_input.drop(
     axis = 0)
 csv_input = csv_input.rename(columns={'NombrePais': 'Country_Spanish', 'textbox11': 'Total Liters', 'Categoria': 'Category', 'textbox14': 'Category Liters', 'Clase': 'Class', 'textbox17': 'Class Liters'})
 
+
 #selecting page elements and entering date information or selecting check boxes to get all 
 #wanted data, downloaded data as .csv
 t3 = csv_input.pivot(values='Class Liters', index='Country_Spanish', columns=['Category', 'Class']).swaplevel(0,1,axis=1)
@@ -88,13 +89,11 @@ t3.columns = t3.columns.map('_'.join)
 t2=pd.pivot_table(csv_input, values='Category Liters', index='Country_Spanish', columns='Category', aggfunc='max')
 t1=pd.pivot_table(csv_input, values='Total Liters', index='Country_Spanish', aggfunc='max')
 
-
 #Creating DFs T4 and T5 to merge T1-T3 to dinish the conversion from long to wide data and adding a new column
 #called date to represent the data of which the given data represents. Re-write T5 back to same .csv file
 t4 = pd.merge(t1, t2, on='Country_Spanish', how='outer')
 t5 = pd.merge(t3, t4, on='Country_Spanish', how='outer')
 t5['Date']=fileName
-
 
 #Creating a dictionary linking spanish and english country spellings
 country_map = {
@@ -204,10 +203,7 @@ t5 = t5.loc[:, ['Country', 'AÑEJO_TEQUILA 100% DE AGAVE', 'BLANCO_TEQUILA 100% 
                 'JOVEN_TEQUILA 100% DE AGAVE',	'Total Liters',	'TEQUILA',	'TEQUILA 100% DE AGAVE', 'Date']]  
 t5 = t5.set_index('Country')
 
-
-
-
-#FOR SQL IMPORT- Create a list of all needed column names even if not reprecented in the dates data. 
+#FOR SQL IMPORT- Create a list of all needed column names even if not reprecented in the dates data.
 column_names = [
     ["BLANCO_TEQUILA"],
     ["EXTRA AÑEJO_TEQUILA 100% DE AGAVE"],
@@ -218,8 +214,7 @@ column_names = [
     ["BLANCO_TEQUILA 100% DE AGAVE"],
     ["REPOSADO_TEQUILA 100% DE AGAVE"],
     ["AÑEJO_TEQUILA"],
-    ["REPOSADO_TEQUILA"],
-    
+    ["REPOSADO_TEQUILA"], 
 ]
 
 #Finding .csv files missing columns from column_names list and adding them to the DF
@@ -231,14 +226,14 @@ missing_columns = set(flat_column_names) - set(t5.columns)
 t5 = t5.assign(**{col: pd.Series(dtype=object) for col in missing_columns})
 t5.to_csv(r'C:\Users\Zachary Hebard\Downloads\ReporteCategoriaClasePais.csv')
 
-#move.csv file from downaloads into a folder called CRT_Data to hold all .csv files     
+#move.csv file from downaloads into a folder called CRT_Data to hold all .csv files       
 shutil.move(r"C:\Users\Zachary Hebard\Downloads\ReporteCategoriaClasePais.csv", r"C:\Users\Zachary Hebard\CRT_Data\ReporteCategoriaClasePais.csv")
 
 #Change working dirctory and find default named .csv file and rename with the date representing the data
 os.chdir(r"C:\Users\Zachary Hebard\CRT_Data")
 for file in os.listdir():
     if file == 'ReporteCategoriaClasePais.csv':
-        continue
+        continue        
 source = (r"ReporteCategoriaClasePais.csv")
 fileName = fileName+".csv"
 dest = os.path.join(os.path.dirname(source), fileName)
@@ -274,12 +269,10 @@ t5['EXTRA AÑEJO_TEQUILA'] = t5['EXTRA AÑEJO_TEQUILA'].str.replace(',', '')
 t5['AÑEJO_TEQUILA 100% DE AGAVE'] = t5['AÑEJO_TEQUILA 100% DE AGAVE'].str.replace(',', '')
 
 #establishing connection with SQL server
-connection_string = f"postgresql://user:pass@hostIP:port/CRT_Data"
+connection_string = f"postgresql://USER:PASS@HOST:PORT/SERVER"
 engine = create_engine(connection_string)
 table_name = 'exports'
-try:
-    t5.to_sql(table_name, engine, if_exists='append', index=True)
-    print("Data imported successfully!")
-except Exception as e:
-    print("Error importing DataFrame:", e)
 
+#Importing df into SQL server
+t5.to_sql(table_name, engine, if_exists='append', index=True)
+    
