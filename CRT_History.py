@@ -3,7 +3,6 @@
 @author: Zachary Hebard
 """
 
-
 #importing libaries
 import pandas as pd
 from selenium import webdriver
@@ -17,7 +16,7 @@ import shutil
 #Read in excel sheet with historical dates needed for data pull
 #Covert Date field to a string and extracting first 9 characters
 #converting past_Dates to a list
-past_Dates = pd.read_excel('past_Dates.xlsx', converters={'Date':str})  
+past_Dates = pd.read_excel('past_Dates.xlsx', converters={'Date':str})    
 past_Dates['Date'] = past_Dates['Date'].str[:10]
 past_Dates = past_Dates['Date'].tolist()
 
@@ -25,16 +24,17 @@ past_Dates = past_Dates['Date'].tolist()
 #assigning the first date to the variable yesterday
 for date in past_Dates:
     yesterday = date
-    #Setting up chrome driver with selenium to automate chrome
     try:
+        #Setting up chrome driver with selenium to automate chrome
         service = Service(executable_path=r"C:\Users\Zachary Hebard\chromedriver")
         driver = webdriver.Chrome(service=service)
+
         #setting site link for slenium to navigate
         driver.get("https://old.crt.org.mx/EstadisticasCRTweb/Informes/ExportacionesPorPais.aspx")
-        #selecting page elements and entering date information or selecting check boxes to get all 
-        #wanted data, downloaded data as .csv
         time.sleep(2)
 
+        #selecting page elements and entering date information or selecting check boxes to get all 
+        #wanted data, downloaded data as .csv
         input_element = driver.find_element(By.ID, "ReportViewer1_ctl04_ctl03_txtValue")
         input_element.send_keys(yesterday)
 
@@ -79,21 +79,21 @@ for date in past_Dates:
         csv_input = csv_input.drop(
             labels=[0,1,2],
             axis = 0)
-        csv_input = csv_input.rename(columns={'NombrePais': 'Country', 'textbox11': 'Total Liters', 'Categoria': 'Category', 'textbox14': 'Category Liters', 'Clase': 'Class', 'textbox17': 'Class Liters'})
+        csv_input = csv_input.rename(columns={'NombrePais': 'Country_Spanish', 'textbox11': 'Total Liters', 'Categoria': 'Category', 'textbox14': 'Category Liters', 'Clase': 'Class', 'textbox17': 'Class Liters'})
         
         #creating new DFs as T1-T3 to create pivot to change the df format fron long to wide.
-        t3 = csv_input.pivot(values='Class Liters', index='Country', columns=['Category', 'Class']).swaplevel(0,1,axis=1)
+        t3 = csv_input.pivot(values='Class Liters', index='Country_Spanish', columns=['Category', 'Class']).swaplevel(0,1,axis=1)
         t3.columns = t3.columns.map('_'.join)
-        t2=pd.pivot_table(csv_input, values='Category Liters', index='Country', columns='Category', aggfunc='max')
-        t1=pd.pivot_table(csv_input, values='Total Liters', index='Country', aggfunc='max')
+        t2=pd.pivot_table(csv_input, values='Category Liters', index='Country_Spanish', columns='Category', aggfunc='max')
+        t1=pd.pivot_table(csv_input, values='Total Liters', index='Country_Spanish', aggfunc='max')
 
         #Creating DFs T4 and T5 to merge T1-T3 to dinish the conversion from long to wide data and adding a new column
         #called date to represent the data of which the given data represents. Re-write T5 back to same .csv file
-        t4 = pd.merge(t1, t2, on='Country', how='outer')
-        t5 = pd.merge(t3, t4, on='Country', how='outer')
+        t4 = pd.merge(t1, t2, on='Country_Spanish', how='outer')
+        t5 = pd.merge(t3, t4, on='Country_Spanish', how='outer')
         t5['Date']=yesterday
         t5.to_csv(r'C:\Users\Zachary Hebard\Downloads\ReporteCategoriaClasePais.csv')
-        
+
         #Creating a dictionary linking spanish and english country spellings
         country_map = {
             'ESTADOS UNIDOS DE AMERICA': 'USA',
@@ -192,7 +192,7 @@ for date in past_Dates:
             'EGIPTO': 'Egypt',
             'BANGLADESH': 'Bangladesh',
             'ISLAS VIRGENES NORTEAMERICANAS': 'U.S. Virgin Islands'
-        }
+    }
 
         #Reset index, add column of Enlhish county spelling using country_map dictionary and reconfigure df.
         t5 = t5.reset_index()
@@ -204,7 +204,6 @@ for date in past_Dates:
 
         #FOR SQL IMPORT- Create a list of all needed column names even if not reprecented in the dates data. 
         column_names = [
-            
             ["BLANCO_TEQUILA"],
             ["EXTRA AÑEJO_TEQUILA 100% DE AGAVE"],
             ["EXTRA AÑEJO_TEQUILA"],
@@ -217,6 +216,7 @@ for date in past_Dates:
             ["REPOSADO_TEQUILA"],
             
 ]
+
         #Finding .csv files missing columns from column_names list and adding them to the DF
         #overwrite T5 and re-wrtire back to .csv file
         flat_column_names = [item for sublist in column_names for item in sublist]
@@ -227,7 +227,7 @@ for date in past_Dates:
         #move.csv file from downaloads into a folder called CRT_Data to hold all .csv files
         shutil.move(r"C:\Users\Zachary Hebard\Downloads\ReporteCategoriaClasePais.csv", r"C:\Users\Zachary Hebard\CRT_Data\ReporteCategoriaClasePais.csv")
 
-        #Change working dirctory and find default named .csv file and rename with the date representing the data
+         #Change working dirctory and find default named .csv file and rename with the date representing the data
         os.chdir(r"C:\Users\Zachary Hebard\CRT_Data")
         for file in os.listdir():
             if file == 'ReporteCategoriaClasePais.csv':
@@ -239,7 +239,7 @@ for date in past_Dates:
         os.rename(source, dest)
         
     #Creating and exception to aid in automation to skip dates where no exports were made resulting in a blnak .csv that would error out.
-    #Changing directory back to downaload, finding the default named .csv and deleting it
+    #Changing directory back to downaload, finding the default named .csv and deleting it    
     except Exception as e:
         print(f"Error scraping data for {yesterday}: {e}")
         os.chdir(r"C:\Users\Zachary Hebard\Downloads")
@@ -256,9 +256,6 @@ for date in past_Dates:
 
 
     
-
-
-
 
 
 
