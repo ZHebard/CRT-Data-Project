@@ -12,6 +12,7 @@ import time
 from datetime import date
 import os
 import shutil
+from sqlalchemy import create_engine 
 
 #Read in excel sheet with historical dates needed for data pull
 #Covert Date field to a string and extracting first 9 characters
@@ -227,7 +228,7 @@ for date in past_Dates:
         #move.csv file from downaloads into a folder called CRT_Data to hold all .csv files
         shutil.move(r"C:\Users\Zachary Hebard\Downloads\ReporteCategoriaClasePais.csv", r"C:\Users\Zachary Hebard\CRT_Data\ReporteCategoriaClasePais.csv")
 
-         #Change working dirctory and find default named .csv file and rename with the date representing the data
+        #Change working dirctory and find default named .csv file and rename with the date representing the data
         os.chdir(r"C:\Users\Zachary Hebard\CRT_Data")
         for file in os.listdir():
             if file == 'ReporteCategoriaClasePais.csv':
@@ -237,6 +238,43 @@ for date in past_Dates:
         fileName = fileName+".csv"
         dest = os.path.join(os.path.dirname(source), fileName)
         os.rename(source, dest)
+
+        #Converting all data types to strings for import into SQL server
+        t5['BLANCO_TEQUILA'] = t5['BLANCO_TEQUILA'].astype(str)
+        t5['BLANCO_TEQUILA 100% DE AGAVE'] = t5['BLANCO_TEQUILA 100% DE AGAVE'].astype(str)
+        t5['REPOSADO_TEQUILA 100% DE AGAVE'] = t5['REPOSADO_TEQUILA 100% DE AGAVE'].astype(str)
+        t5['EXTRA AÑEJO_TEQUILA 100% DE AGAVE'] = t5['EXTRA AÑEJO_TEQUILA 100% DE AGAVE'].astype(str)
+        t5['JOVEN_TEQUILA'] = t5['JOVEN_TEQUILA'].astype(str)
+        t5['REPOSADO_TEQUILA'] = t5['REPOSADO_TEQUILA'].astype(str)
+        t5['EXTRA AÑEJO_TEQUILA 100% DE AGAVE'] = t5['EXTRA AÑEJO_TEQUILA 100% DE AGAVE'].astype(str)
+        t5['JOVEN_TEQUILA 100% DE AGAVE'] = t5['JOVEN_TEQUILA 100% DE AGAVE'].astype(str)
+        t5['TEQUILA'] = t5['TEQUILA'].astype(str)
+        t5['TEQUILA 100% DE AGAVE'] = t5['TEQUILA 100% DE AGAVE'].astype(str)
+        t5['AÑEJO_TEQUILA'] = t5['AÑEJO_TEQUILA'].astype(str)
+        t5['EXTRA AÑEJO_TEQUILA'] = t5['EXTRA AÑEJO_TEQUILA'].astype(str)
+        t5['AÑEJO_TEQUILA 100% DE AGAVE'] = t5['AÑEJO_TEQUILA 100% DE AGAVE'].astype(str)
+        t5['BLANCO_TEQUILA'] = t5['BLANCO_TEQUILA'].str.replace(',', '')
+        t5['BLANCO_TEQUILA 100% DE AGAVE'] = t5['BLANCO_TEQUILA 100% DE AGAVE'].str.replace(',', '')
+        t5['REPOSADO_TEQUILA 100% DE AGAVE'] = t5['REPOSADO_TEQUILA 100% DE AGAVE'].str.replace(',', '')
+        t5['EXTRA AÑEJO_TEQUILA 100% DE AGAVE'] = t5['EXTRA AÑEJO_TEQUILA 100% DE AGAVE'].str.replace(',', '')
+        t5['JOVEN_TEQUILA'] = t5['JOVEN_TEQUILA'].str.replace(',', '')
+        t5['REPOSADO_TEQUILA'] = t5['REPOSADO_TEQUILA'].str.replace(',', '')
+        t5['EXTRA AÑEJO_TEQUILA 100% DE AGAVE'] = t5['EXTRA AÑEJO_TEQUILA 100% DE AGAVE'].str.replace(',', '')
+        t5['JOVEN_TEQUILA 100% DE AGAVE'] = t5['JOVEN_TEQUILA 100% DE AGAVE'].str.replace(',', '')
+        t5['Total Liters'] = t5['Total Liters'].str.replace(',', '')
+        t5['TEQUILA'] = t5['TEQUILA'].str.replace(',', '')
+        t5['TEQUILA 100% DE AGAVE'] = t5['TEQUILA 100% DE AGAVE'].str.replace(',', '')
+        t5['AÑEJO_TEQUILA'] = t5['AÑEJO_TEQUILA'].str.replace(',', '')
+        t5['EXTRA AÑEJO_TEQUILA'] = t5['EXTRA AÑEJO_TEQUILA'].str.replace(',', '')
+        t5['AÑEJO_TEQUILA 100% DE AGAVE'] = t5['AÑEJO_TEQUILA 100% DE AGAVE'].str.replace(',', '')
+
+        #establishing connection with SQL server
+        connection_string = f"postgresql://postgres:el_pandillo@localhost:5433/CRT_Data"
+        engine = create_engine(connection_string)
+        table_name = 'exports'
+        t5.to_sql(table_name, engine, if_exists='append', index=True)
+   
+
         
     #Creating and exception to aid in automation to skip dates where no exports were made resulting in a blnak .csv that would error out.
     #Changing directory back to downaload, finding the default named .csv and deleting it    
