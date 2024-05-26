@@ -95,7 +95,7 @@ for date in past_Dates:
         t5['Date']=yesterday
         t5.to_csv(r'C:\Users\Zachary Hebard\Downloads\ReporteCategoriaClasePais.csv')
 
-            #Creating a dictionary linking spanish and english country spellings
+        #Creating a dictionary linking spanish and english country spellings
         country_map = {
             'ALBANIA':'ALBANIA',
             'ARGELIA':'ALGERIA',
@@ -106,7 +106,7 @@ for date in past_Dates:
             'ARUBA':'ARUBA',
             'AUSTRALIA':'AUSTRALIA',
             'AUSTRIA':'AUSTRIA',
-            'AZERBAIJAN':'AZERBAIJAN',
+            'AZERBAIJAN ':'AZERBAIJAN',
             'BAHAMAS':'BAHAMAS',
             'BAHREIN':'BAHRAIN',
             'BANGLADESH':'BANGLADESH',
@@ -126,7 +126,7 @@ for date in past_Dates:
             'CAMBOYA':'CAMBODIA',
             'CAMERUN':'CAMEROON',
             'CANADA':'CANADA',
-            'ISLAS CAIMAN':'CAYMAN ISLANDS',
+            'ISLAS CAIMAN  ':'CAYMAN ISLANDS',
             'CHILE':'CHILI',
             'CHINA':'CHINA',
             'COLOMBIA':'COLOMBIA',
@@ -242,7 +242,7 @@ for date in past_Dates:
             'UZBEJISTAN':'UZBEJISTAN',
             'VENEZUELA':'VENEZUELA',
             'VIETNAM':'VIETNAM'
-        }
+}
 
         #Reset index, add column of Enlhish county spelling using country_map dictionary and reconfigure df.
         t5 = t5.reset_index()
@@ -334,15 +334,3 @@ for date in past_Dates:
    
     pass  
     
-
-
-
-
-
-
-
-
-    
-
-
-
