@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Sat May 25 21:25:19 2024
+
+@author: Zachary Hebard
+"""
+
+# -*- coding: utf-8 -*-
+"""
 @author: Zachary Hebard
 """
 
@@ -129,7 +136,7 @@ country_map = {
     'ARUBA':'ARUBA',
     'AUSTRALIA':'AUSTRALIA',
     'AUSTRIA':'AUSTRIA',
-    'AZERBAIJAN':'AZERBAIJAN',
+    'AZERBAIJAN ':'AZERBAIJAN',
     'BAHAMAS':'BAHAMAS',
     'BAHREIN':'BAHRAIN',
     'BANGLADESH':'BANGLADESH',
@@ -149,7 +156,7 @@ country_map = {
     'CAMBOYA':'CAMBODIA',
     'CAMERUN':'CAMEROON',
     'CANADA':'CANADA',
-    'ISLAS CAIMAN':'CAYMAN ISLANDS',
+    'ISLAS CAIMAN  ':'CAYMAN ISLANDS',
     'CHILE':'CHILI',
     'CHINA':'CHINA',
     'COLOMBIA':'COLOMBIA',
