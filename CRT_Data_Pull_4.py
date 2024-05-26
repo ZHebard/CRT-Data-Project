@@ -5,11 +5,6 @@ Created on Sat May 25 21:25:19 2024
 @author: Zachary Hebard
 """
 
-# -*- coding: utf-8 -*-
-"""
-@author: Zachary Hebard
-"""
-
 
 #importing libaries
 from selenium import webdriver
