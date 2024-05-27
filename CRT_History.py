@@ -95,6 +95,29 @@ for date in past_Dates:
         t5['Date']=yesterday
         t5.to_csv(r'C:\Users\Zachary Hebard\Downloads\ReporteCategoriaClasePais.csv')
 
+        #FOR SQL IMPORT- Create a list of all needed column names even if not reprecented in the dates data.
+        column_names = [
+            ["BLANCO_TEQUILA"],
+            ["EXTRA AÑEJO_TEQUILA 100% DE AGAVE"],
+            ["EXTRA AÑEJO_TEQUILA"],
+            ["JOVEN_TEQUILA 100% DE AGAVE"],
+            ["JOVEN_TEQUILA"],
+            ["AÑEJO_TEQUILA 100% DE AGAVE"],
+            ["BLANCO_TEQUILA 100% DE AGAVE"],
+            ["REPOSADO_TEQUILA 100% DE AGAVE"],
+            ["AÑEJO_TEQUILA"],
+            ["REPOSADO_TEQUILA"],
+            ["TEQUILA"],
+            ["TEQUILA 100% DE AGAVE"]
+    
+]
+        #Finding .csv files missing columns from column_names list and adding them to the DF
+        #overwrite T5 and re-wrtire back to .csv file
+        flat_column_names = [item for sublist in column_names for item in sublist]
+        missing_columns = set(flat_column_names) - set(t5.columns)
+        t5 = t5.assign(**{col: pd.Series(dtype=object) for col in missing_columns})
+
+        
         #Creating a dictionary linking spanish and english country spellings
         country_map = {
             'ALBANIA':'ALBANIA',
@@ -251,21 +274,6 @@ for date in past_Dates:
                         'EXTRA AÑEJO_TEQUILA 100% DE AGAVE',	'BLANCO_TEQUILA',	'REPOSADO_TEQUILA',	'JOVEN_TEQUILA',	
                         'JOVEN_TEQUILA 100% DE AGAVE',	'Total Liters',	'TEQUILA',	'TEQUILA 100% DE AGAVE', 'Date']]  
         t5 = t5.set_index('Country')
-
-        #FOR SQL IMPORT- Create a list of all needed column names even if not reprecented in the dates data. 
-        column_names = [
-            ["BLANCO_TEQUILA"],
-            ["EXTRA AÑEJO_TEQUILA 100% DE AGAVE"],
-            ["EXTRA AÑEJO_TEQUILA"],
-            ["JOVEN_TEQUILA 100% DE AGAVE"],
-            ["JOVEN_TEQUILA"],
-            ["AÑEJO_TEQUILA 100% DE AGAVE"],
-            ["BLANCO_TEQUILA 100% DE AGAVE"],
-            ["REPOSADO_TEQUILA 100% DE AGAVE"],
-            ["AÑEJO_TEQUILA"],
-            ["REPOSADO_TEQUILA"],
-            
-]
 
         #Finding .csv files missing columns from column_names list and adding them to the DF
         #overwrite T5 and re-wrtire back to .csv file
