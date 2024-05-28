@@ -253,7 +253,7 @@ for date in past_Dates:
             'SIRIA':'SYRIA',
             'TAIWAN':'TAIWAN',
             'TAILANDIA':'THAILAND',
-            'EL SALVADOR':'THE SAVIOR',
+            'EL SALVADOR':'EL SALVADOR',
             'TRINIDAD Y TOBAGO':'TRINIDAD AND TOBAGO',
             'TURQUIA':'TURKEY',
             'TURCAS Y CAICOS':'TURKS AND CAICOS',
